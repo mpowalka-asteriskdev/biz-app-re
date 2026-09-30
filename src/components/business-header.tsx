@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { type Href, Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { AuthLogo } from '@/components/auth-icons';
@@ -9,17 +10,19 @@ const profileIcon = require('@/assets/app/profile-circle.svg');
 
 export type BusinessSection = 'calendar' | 'clients' | 'employees' | 'sales' | 'profile';
 
-const SECTIONS: { key: BusinessSection; label: string }[] = [
-  { key: 'calendar', label: 'Kalendarz' },
+// Only sections with a desktop page link anywhere.
+const SECTIONS: { key: BusinessSection; label: string; href?: Href }[] = [
+  { key: 'calendar', label: 'Kalendarz', href: '/calendar' },
   { key: 'clients', label: 'Klienci' },
   { key: 'employees', label: 'Pracownicy' },
   { key: 'sales', label: 'Sprzedaż' },
-  { key: 'profile', label: 'Profil' },
+  { key: 'profile', label: 'Profil', href: '/profile' },
 ];
 
 /**
  * Dark header of the business app's desktop pages: logo, profile button (with sign-out) and the
- * menu. Only the calendar exists so far, so the other entries and the two buttons do nothing yet.
+ * menu. Only Kalendarz and Profil have desktop pages so far, so the other entries and the two
+ * buttons do nothing yet.
  */
 export function BusinessHeader({ active }: { active: BusinessSection }) {
   const styles = useBusinessHeaderStyles();
@@ -34,13 +37,19 @@ export function BusinessHeader({ active }: { active: BusinessSection }) {
       </View>
 
       <View style={styles.navigation}>
-        {SECTIONS.map((section) => (
-          <Text
-            key={section.key}
-            style={[styles.navigationItem, section.key === active && styles.navigationItemActive]}>
-            {section.label}
-          </Text>
-        ))}
+        {SECTIONS.map(({ key, label, href }) => {
+          const style = [styles.navigationItem, key === active && styles.navigationItemActive];
+
+          return href ? (
+            <Link key={key} href={href} style={style}>
+              {label}
+            </Link>
+          ) : (
+            <Text key={key} style={style}>
+              {label}
+            </Text>
+          );
+        })}
         <View style={styles.navigationButton}>
           <Text style={styles.navigationButtonLabel}>Dodaj wizytę</Text>
         </View>

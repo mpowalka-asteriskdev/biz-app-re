@@ -14,11 +14,15 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AuthLogo } from '@/components/auth-icons';
 import { useOnboardingStyles } from '@/components/onboarding.styles';
+import { SignOutMenuButton } from '@/components/sign-out-menu';
+import { SiteFooter } from '@/components/site-footer';
 import { usePlatformLayout } from '@/hooks/use-platform-layout';
 
-const pageBackground = require('@/assets/auth/background.jpg');
 const backIcon = require('@/assets/onboarding/back.svg');
+const profileIcon = require('@/assets/app/profile-circle.svg');
+const shopIcon = require('@/assets/onboarding/shop.svg');
 const stepImages = [
   require('@/assets/onboarding/steps-1.svg'),
   require('@/assets/onboarding/steps-2.svg'),
@@ -33,14 +37,78 @@ type OnboardingScreenProps = {
   step: number;
   title: string;
   description: string;
+  /** Phones only: the desktop design has no back button (the browser's back works there). */
   onBack: () => void;
-  /** Pinned below the scrolling content, e.g. the step's main button. */
+  /** The step's main button: pinned to the bottom on phones, right after the content on desktop. */
   footer?: ReactNode;
+  /** Desktop only: content under the button (step 2's consents). */
+  belowFooter?: ReactNode;
+  /** Desktop only: space between the content and the button, which differs per step in Figma. */
+  desktopFooterSpacing?: number;
   children: ReactNode;
 };
 
-/** Frame shared by the registration steps: back button, step dots, heading and content. */
-export function OnboardingScreen({
+/** Frame shared by the registration steps: heading, step dots, content and the main button. */
+export function OnboardingScreen(props: OnboardingScreenProps) {
+  const { isWebDesktop } = usePlatformLayout();
+
+  return isWebDesktop ? <DesktopOnboardingScreen {...props} /> : <PhoneOnboardingScreen {...props} />;
+}
+
+/** "Company details register" frames: dark header, a centred column and the site footer. */
+function DesktopOnboardingScreen({
+  step,
+  title,
+  description,
+  footer,
+  belowFooter,
+  desktopFooterSpacing = 40,
+  children,
+}: OnboardingScreenProps) {
+  const styles = useOnboardingStyles();
+
+  return (
+    <ScrollView
+      contentContainerStyle={styles.desktopPage}
+      keyboardShouldPersistTaps="handled"
+      style={styles.screen}>
+      <View style={styles.desktopHeader}>
+        <View style={styles.desktopTopRow}>
+          <AuthLogo width={216} height={38} />
+          <SignOutMenuButton accessibilityLabel="Profil">
+            <Image accessibilityLabel="" source={profileIcon} style={styles.desktopProfileIcon} />
+          </SignOutMenuButton>
+        </View>
+        <Image
+          accessibilityLabel={`Krok ${step} z ${stepImages.length}`}
+          source={stepImages[step - 1]}
+          style={[styles.steps, styles.desktopSteps]}
+        />
+      </View>
+
+      <View style={styles.desktopBody}>
+        <View style={styles.desktopContent}>
+          <View style={styles.desktopHeading}>
+            <Image accessibilityLabel="" source={shopIcon} style={styles.desktopHeadingIcon} />
+            <Text style={styles.desktopHeadingText}>Załóżmy konto Twojego biznesu</Text>
+          </View>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+          {children}
+          {footer && (
+            <View style={[styles.desktopFooter, { marginTop: desktopFooterSpacing }]}>{footer}</View>
+          )}
+          {belowFooter}
+        </View>
+      </View>
+
+      <SiteFooter />
+    </ScrollView>
+  );
+}
+
+/** "Branch" frames: back button and dots, scrolling content, and the button pinned below. */
+function PhoneOnboardingScreen({
   step,
   title,
   description,
@@ -50,23 +118,10 @@ export function OnboardingScreen({
 }: OnboardingScreenProps) {
   const styles = useOnboardingStyles();
   const insets = useSafeAreaInsets();
-  const { isWebDesktop } = usePlatformLayout();
 
   return (
     <SafeAreaView edges={['top', 'right', 'left']} style={styles.screen}>
       <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
-      {/* Desktop web shows the steps as a card, over the same photo as the login page. */}
-      {isWebDesktop && (
-        <>
-          <Image
-            accessibilityLabel=""
-            contentFit="cover"
-            source={pageBackground}
-            style={styles.pageBackground}
-          />
-          <View pointerEvents="none" style={styles.pageOverlay} />
-        </>
-      )}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.column}>

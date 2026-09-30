@@ -17,6 +17,7 @@ import { Checkbox, OnboardingButton, OnboardingScreen } from '@/components/onboa
 import { useOnboardingStyles } from '@/components/onboarding.styles';
 import { Toggle } from '@/components/toggle';
 import { WEEK_DAYS } from '@/constants/onboarding';
+import { usePlatformLayout } from '@/hooks/use-platform-layout';
 import { authClient } from '@/lib/auth-client';
 import { switchToBusinessAccount } from '@/lib/onboarding';
 import {
@@ -190,6 +191,7 @@ export function CompanyStep() {
   const styles = useOnboardingStyles();
   const { data, update } = useOnboarding();
   const { data: session } = authClient.useSession();
+  const { isWebDesktop } = usePlatformLayout();
   const [mapVisible, setMapVisible] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -241,13 +243,44 @@ export function CompanyStep() {
     }
   }
 
+  // At the end of the content on phones; the desktop design puts them under the button.
+  const consentRows = (
+    <View style={styles.consents}>
+      <Checkbox
+        checked={consents.terms && consents.marketing}
+        label="Zgodna na wszystkie poniższe"
+        onChange={(checked) => {
+          update({ consents: { terms: checked, marketing: checked } });
+          setMessage(null);
+        }}
+      />
+      <Checkbox
+        checked={consents.terms}
+        label="Akceptuję regulamin"
+        onChange={(terms) => {
+          update({ consents: { ...consents, terms } });
+          setMessage(null);
+        }}
+        style={styles.checkboxRowNested}
+      />
+      <Checkbox
+        checked={consents.marketing}
+        label="Chcę otrzymywać informacje o ..."
+        onChange={(marketing) => update({ consents: { ...consents, marketing } })}
+        style={styles.checkboxRowNested}
+      />
+    </View>
+  );
+
   return (
     <>
       <OnboardingScreen
         step={2}
-        title="Coś o Twojej firmie"
+        title={isWebDesktop ? 'Coś więcej o Twojej firmie' : 'Coś o Twojej firmie'}
         description="Uzupełnij dane identyfikacyjne swojej firmy"
         onBack={() => router.back()}
+        belowFooter={isWebDesktop && consentRows}
+        desktopFooterSpacing={27}
         footer={
           <>
             {message && (
@@ -289,31 +322,7 @@ export function CompanyStep() {
           </Pressable>
         </View>
 
-        <View style={styles.consents}>
-          <Checkbox
-            checked={consents.terms && consents.marketing}
-            label="Zgodna na wszystkie poniższe"
-            onChange={(checked) => {
-              update({ consents: { terms: checked, marketing: checked } });
-              setMessage(null);
-            }}
-          />
-          <Checkbox
-            checked={consents.terms}
-            label="Akceptuję regulamin"
-            onChange={(terms) => {
-              update({ consents: { ...consents, terms } });
-              setMessage(null);
-            }}
-            style={styles.checkboxRowNested}
-          />
-          <Checkbox
-            checked={consents.marketing}
-            label="Chcę otrzymywać informacje o ..."
-            onChange={(marketing) => update({ consents: { ...consents, marketing } })}
-            style={styles.checkboxRowNested}
-          />
-        </View>
+        {!isWebDesktop && consentRows}
       </OnboardingScreen>
 
       <MapPopup
@@ -469,6 +478,7 @@ export function HoursStep() {
   const router = useRouter();
   const styles = useOnboardingStyles();
   const { data, update } = useOnboarding();
+  const { isWebDesktop } = usePlatformLayout();
   const [editedDay, setEditedDay] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -508,9 +518,15 @@ export function HoursStep() {
     <>
       <OnboardingScreen
         step={4}
-        title="Godziny otwarcia"
-        description="W jakich godzinach obsługujesz klientów?"
+        // The desktop design words the heading differently and ends with a black button.
+        title={isWebDesktop ? 'W jakich godzinach obsługujesz klientów?' : 'Godziny otwarcia'}
+        description={
+          isWebDesktop
+            ? 'Zaznacz wybrane dni tygodnia i kliknij na godzinę, aby ją edytować'
+            : 'W jakich godzinach obsługujesz klientów?'
+        }
         onBack={() => router.back()}
+        desktopFooterSpacing={47}
         footer={
           <>
             {message && (
@@ -518,7 +534,12 @@ export function HoursStep() {
                 {message}
               </Text>
             )}
-            <OnboardingButton busy={saving} label="Zaczynamy!" variant="accent" onPress={finish} />
+            <OnboardingButton
+              busy={saving}
+              label={isWebDesktop ? 'Zaczynamy' : 'Zaczynamy!'}
+              variant={isWebDesktop ? 'dark' : 'accent'}
+              onPress={finish}
+            />
           </>
         }>
         <View style={styles.hoursList}>

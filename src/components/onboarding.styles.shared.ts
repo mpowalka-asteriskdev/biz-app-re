@@ -6,30 +6,76 @@ const MUTED = '#AAA5A2';
 const DIVIDER = '#EBEBEB';
 const BUTTON_SHADOW = '0px 4px 2.9px rgba(0, 0, 0, 0.15)';
 
-/** Registration steps and their popups ("Branch" frames in Figma), mobile design. */
+/**
+ * Registration steps and their popups: "Branch" frames (mobile design) and "Company details
+ * register" frames (desktop web, the `desktop…` styles).
+ */
 export const sharedOnboardingStyles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-  // Desktop web only: the login page's photo behind the steps' card.
-  pageBackground: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
+
+  // Desktop web page: dark header, a centred column and the site footer.
+  desktopPage: {
+    flexGrow: 1,
+  },
+  desktopHeader: {
+    backgroundColor: TEXT,
+    paddingTop: 39,
+    paddingBottom: 27,
+    paddingHorizontal: 64,
+  },
+  desktopTopRow: {
+    alignSelf: 'center',
     width: '100%',
-    height: '100%',
+    maxWidth: 1226,
+    height: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  pageOverlay: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  desktopProfileIcon: {
+    width: 48,
+    height: 48,
   },
+  // Just under the logo row, centred.
+  desktopSteps: {
+    alignSelf: 'center',
+    marginTop: -1,
+  },
+  desktopBody: {
+    flexGrow: 1,
+    paddingHorizontal: 64,
+  },
+  desktopContent: {
+    alignSelf: 'center',
+    width: '100%',
+    maxWidth: 786,
+    paddingTop: 91,
+    paddingBottom: 96,
+  },
+  desktopHeading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 13,
+  },
+  desktopHeadingIcon: {
+    width: 32,
+    height: 29.23,
+  },
+  desktopHeadingText: {
+    color: '#000000',
+    fontSize: 32,
+    lineHeight: 39,
+    fontWeight: '700',
+  },
+  // The button keeps its 339px maximum width, on the left.
+  desktopFooter: {
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+
   column: {
     flex: 1,
     width: '100%',

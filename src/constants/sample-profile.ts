@@ -12,3 +12,14 @@ export const SAMPLE_PROFILE = {
     address: 'Główna 69, Poznań',
   },
 };
+
+/**
+ * Sample details of the desktop Profil page ("Company profile desktop" in Figma); the places
+ * service has no description or contact details yet.
+ */
+export const SAMPLE_COMPANY_PROFILE = {
+  about:
+    'Lorem ipsum dolor sit fryzjer, epsum paras kole matos, asto berdo etno faragato. Lorem ipsum dolor sit fryzjer, epsum paras kole matos, asto berdo etno faragato.',
+  phone: '600 123 456',
+  email: 'barber@przyglownej.pl',
+};

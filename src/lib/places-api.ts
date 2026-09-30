@@ -43,12 +43,22 @@ export type OpeningHoursInput = Partial<
   Record<`${WeekDay}Open`, boolean> & Record<`${WeekDay}${'OpensAt' | 'ClosesAt'}`, string | null>
 >;
 
+/** Saved opening hours; a place that has none is closed every day. Times come as HH:MM:SS. */
+export type OpeningHours = Record<`${WeekDay}Open`, boolean> &
+  Record<`${WeekDay}${'OpensAt' | 'ClosesAt'}`, string | null>;
+
 export async function getPlaces(): Promise<Place[]> {
   return readJson(await fetch(`${placesBaseUrl}/places`));
 }
 
 export async function getCategories(): Promise<Category[]> {
   return readJson(await fetch(`${placesBaseUrl}/categories`));
+}
+
+export async function getOpeningHours(placeId: string): Promise<OpeningHours> {
+  return readJson(
+    await fetch(`${placesBaseUrl}/places/${encodeURIComponent(placeId)}/opening-hours`),
+  );
 }
 
 export function createPlace(input: PlaceInput & { name: string }): Promise<Place> {

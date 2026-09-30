@@ -1,13 +1,20 @@
-import { Platform, Pressable, Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
+import { CompanyProfileScreen } from '@/components/company-profile-screen';
 import { PlaceholderScreen } from '@/components/placeholder-screen';
 import { usePlaceholderScreenStyles } from '@/components/placeholder-screen.styles';
 import { ProfileScreen } from '@/components/profile-screen';
+import { usePlatformLayout } from '@/hooks/use-platform-layout';
 import { authClient } from '@/lib/auth-client';
 
 export default function ProfileRoute() {
-  // Only the Android layout is designed so far.
-  return Platform.OS === 'android' ? <ProfileScreen /> : <ProfilePlaceholder />;
+  const { isAndroid, isWebDesktop } = usePlatformLayout();
+
+  // Only the Android and desktop web layouts are designed so far.
+  if (isAndroid) return <ProfileScreen />;
+  if (isWebDesktop) return <CompanyProfileScreen />;
+
+  return <ProfilePlaceholder />;
 }
 
 function ProfilePlaceholder() {

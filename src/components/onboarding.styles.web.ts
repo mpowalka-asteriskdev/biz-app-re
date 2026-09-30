@@ -14,24 +14,44 @@ const webOverrides = StyleSheet.create({
   },
 });
 
-/**
- * Desktop web has no design of its own: the Android layout sits in a phone-sized card (the
- * Figma frames are 393x852) on the login page's photo.
- */
+/** Desktop web design ("Company details register" frames in Figma). */
 const webDesktopOverrides = StyleSheet.create({
-  screen: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 48,
-    backgroundColor: '#11110F',
+  title: {
+    marginTop: 35,
   },
-  column: {
-    maxWidth: 393,
-    maxHeight: 852,
-    borderRadius: 20,
-    overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
-    boxShadow: '0px 12px 40px rgba(0, 0, 0, 0.35)',
+  description: {
+    marginTop: 9,
+  },
+  // Lines up with the left-aligned button.
+  message: {
+    textAlign: 'left',
+  },
+  industryList: {
+    marginTop: 30,
+    marginHorizontal: 0,
+  },
+  // Below the button on desktop.
+  consents: {
+    marginTop: 44,
+    paddingTop: 0,
+  },
+  checkboxRowNested: {
+    marginLeft: 51,
+  },
+  profileTitle: {
+    color: '#201F1E',
+  },
+  profileDescription: {
+    color: '#201F1E',
+  },
+  hoursRow: {
+    paddingLeft: 2,
+  },
+  hoursDetails: {
+    marginLeft: 47,
+  },
+  hoursDay: {
+    width: 352,
   },
 });
 
