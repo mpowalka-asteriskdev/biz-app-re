@@ -40,14 +40,13 @@ type AuthMode = 'login' | 'register';
 
 type AuthScreenProps = {
   mode: AuthMode;
-  initialMessage?: string;
 };
 
 const background = require('@/assets/auth/background.jpg');
 const businessWordmark = require('@/assets/auth/logo-business.svg');
 const shopIcon = require('@/assets/auth/shop.svg');
 
-export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
+export function AuthScreen({ mode }: AuthScreenProps) {
   const router = useRouter();
   const { refetch } = authClient.useSession();
   const { isWebDesktop: isDesktop } = usePlatformLayout();
@@ -60,7 +59,7 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState<string | null>(initialMessage ?? null);
+  const [message, setMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
 
   // Desktop fields show a tick once login input is valid, and clear buttons while registering.
@@ -95,8 +94,10 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
     setSubmitting(true);
     clearMessage();
 
+    // Accounts created in this app are business accounts (a Better Auth additional field).
     const result = isRegister
       ? await authClient.signUp.email({
+          accountType: 'business',
           callbackURL: getAuthCallbackUrl(),
           email: trimmedEmail,
           name: trimmedName,
@@ -116,11 +117,8 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
       return;
     }
 
-    if (isRegister) {
-      router.replace('/login?registered=1');
-      return;
-    }
-
+    // Sign-up signs the user in too. Home then sends accounts without a filled-in place to
+    // onboarding.
     await refetch();
     router.replace('/');
   }
@@ -391,10 +389,8 @@ function AuthHeader({
         <Link asChild href="/">
           <Pressable accessibilityLabel="ogarnijmy.to w Twoim biznesie, strona główna">
             <AuthLogo width={isDesktop ? 216 : 277} height={isDesktop ? 38 : 48} />
-            {/* Desktop only; hangs below the logo without making the header taller. */}
-            {isDesktop && (
-              <Image accessibilityLabel="" source={businessWordmark} style={styles.wordmark} />
-            )}
+            {/* Hangs below the logo without making the header taller. */}
+            <Image accessibilityLabel="" source={businessWordmark} style={styles.wordmark} />
           </Pressable>
         </Link>
 

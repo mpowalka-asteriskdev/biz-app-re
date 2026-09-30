@@ -36,6 +36,11 @@ export function Toggle({
   }));
 
   const knobStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(
+      progress.get(),
+      [0, 1],
+      [TOGGLE_COLORS.knobOff, TOGGLE_COLORS.knobOn],
+    ),
     transform: [{ translateX: progress.get() * TOGGLE_KNOB_TRAVEL }],
   }));
 

@@ -29,7 +29,16 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false, autoHideHomeIndicator: true }}>
           {/* Signed-out users land on the first available screen, which is login. */}
           <Stack.Protected guard={!!session}>
-            <Stack.Screen name="index" />
+            {/* Client accounts (e.g. from the client app) only get onboarding, which makes them
+                business accounts. Home also sends businesses without a place there. */}
+            <Stack.Protected guard={session?.user.accountType === 'business'}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="(tabs)" />
+              {/* Forms opened with "+"; they cover the tabs, without the bottom menu. */}
+              <Stack.Screen name="clients/new" />
+              <Stack.Screen name="visits/new" />
+            </Stack.Protected>
+            <Stack.Screen name="onboarding" />
           </Stack.Protected>
 
           <Stack.Protected guard={!session}>

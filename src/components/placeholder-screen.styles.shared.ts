@@ -23,4 +23,20 @@ export const sharedPlaceholderScreenStyles = StyleSheet.create({
     fontWeight: '300',
     textAlign: 'center',
   },
+  // Temporary sign-out on the Profil tab, until the profile screen is designed.
+  button: {
+    marginTop: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    backgroundColor: '#E64F21',
+  },
+  buttonLabel: {
+    color: '#F9F6F2',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  pressed: {
+    opacity: 0.72,
+  },
 });

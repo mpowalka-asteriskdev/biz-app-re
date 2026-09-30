@@ -34,6 +34,13 @@ const webDesktopOverrides = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  // Offsets from the business Figma frame, relative to the logo.
+  wordmark: {
+    top: 40.55,
+    left: 74.07,
+    width: 162.93,
+    height: 24.64,
+  },
   formWrap: {
     marginTop: 'auto',
     marginBottom: 'auto',

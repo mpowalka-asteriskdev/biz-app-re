@@ -46,13 +46,14 @@ export const sharedAuthScreenStyles = StyleSheet.create({
     marginTop: 32,
   },
   headerRow: {},
-  // "w Twoim biznesie" under the logo, desktop only; offsets from the Figma frame.
+  // "w Twoim biznesie" under the logo. Only the desktop frame has it, so these are its offsets
+  // scaled to the 277px mobile logo.
   wordmark: {
     position: 'absolute',
-    top: 40.55,
-    left: 74.07,
-    width: 162.93,
-    height: 24.64,
+    top: 52,
+    left: 95,
+    width: 208.96,
+    height: 31.6,
   },
   backButton: {
     alignSelf: 'flex-start',
