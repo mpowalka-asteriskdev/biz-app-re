@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import * as Linking from 'expo-linking';
-import { type Href, Link, useIsFocused, useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { type ReactNode, useState } from 'react';
 import {
   ActivityIndicator,
@@ -12,12 +13,10 @@ import {
   Text,
   TextInput,
   type TextInputProps,
-  useWindowDimensions,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getAppMenuHeight } from '@/components/app-menu';
 import { useAuthScreenStyles } from '@/components/auth-screen.styles';
 import {
   AppleIcon,
@@ -44,24 +43,16 @@ type AuthScreenProps = {
   initialMessage?: string;
 };
 
-const mobileBackground = require('@/assets/auth/background.png');
-const desktopBackground = require('@/assets/auth/background-desktop.png');
-
-// Where login leads: the web app has its own /app home page, the native app opens on Szukamy.
-// The generated route types miss the /app index page, hence the assertion.
-const appHomeHref = (Platform.OS === 'web' ? '/app' : '/app/search') as Href;
+const background = require('@/assets/auth/background.jpg');
+const businessWordmark = require('@/assets/auth/logo-business.svg');
+const shopIcon = require('@/assets/auth/shop.svg');
 
 export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
   const router = useRouter();
-  const { width } = useWindowDimensions();
   const { refetch } = authClient.useSession();
   const { isWebDesktop: isDesktop } = usePlatformLayout();
   const styles = useAuthScreenStyles();
   const isRegister = mode === 'register';
-  // Login is the Profil tab, so the tab layout draws the app menu over it on mobile.
-  const showMenu = !isRegister && !isDesktop;
-  // Tab screens stay mounted, so only the visible one may set the status bar style.
-  const isFocused = useIsFocused();
 
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
@@ -126,12 +117,12 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
     }
 
     if (isRegister) {
-      router.replace('/app/account?registered=1');
+      router.replace('/login?registered=1');
       return;
     }
 
     await refetch();
-    router.replace(appHomeHref);
+    router.replace('/');
   }
 
   async function signInWithGoogle() {
@@ -154,7 +145,7 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
 
     if (Platform.OS !== 'web') {
       await refetch();
-      router.replace(appHomeHref);
+      router.replace('/');
     }
   }
 
@@ -173,17 +164,15 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
       accessibilityLabel=""
       imageStyle={styles.backgroundImage}
       resizeMode="cover"
-      source={isDesktop ? desktopBackground : mobileBackground}
+      source={background}
       style={styles.screen}>
-      {isFocused && <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />}
+      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
       <View
         pointerEvents="none"
         style={styles.backdrop}
       />
 
-      <SafeAreaView
-        edges={showMenu ? ['top', 'right', 'left'] : undefined}
-        style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           style={styles.keyboardView}>
@@ -191,25 +180,21 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
-            <View
-              style={[
-                styles.hero,
-                // The menu overlays the bottom of the screen, so keep the form clear of it.
-                showMenu && { paddingBottom: getAppMenuHeight(width) + 28 },
-              ]}>
+            <View style={styles.hero}>
               <AuthHeader
                 isDesktop={isDesktop}
-                onBack={isRegister && !isDesktop ? () => router.replace('/app/account') : undefined}
-                onProfilePress={isRegister ? () => router.replace('/app/account') : undefined}
+                onBack={isRegister && !isDesktop ? () => router.replace('/login') : undefined}
+                onProfilePress={isRegister ? () => router.replace('/login') : undefined}
               />
 
               <View style={[styles.formWrap, isRegister && styles.formWrapRegister]}>
                 <View style={styles.headingBlock}>
-                  <Text style={styles.title}>Dołącz do nas</Text>
+                  <Text style={styles.title}>Dołącz ze swoim biznesem</Text>
                   <Text style={styles.description}>
+                    {/* The mobile design breaks the login text after "nami". */}
                     {isRegister
                       ? 'Uzupełnij niezbędne dane, aby utworzyć konto'
-                      : 'Aby wykorzystać pełną funkcjonalność systemu, zaloguj się lub załóż darmowe konto.'}
+                      : `Aby umawiać klientów i ogarniać swój biznes razem z nami${isDesktop ? ' ' : '\n'}zaloguj się lub załóż darmowe konto.`}
                   </Text>
                 </View>
 
@@ -334,7 +319,7 @@ export function AuthScreen({ mode, initialMessage }: AuthScreenProps) {
                 {(!isRegister || isDesktop) && (
                   <Pressable
                     accessibilityRole="link"
-                    onPress={() => router.replace(isRegister ? '/app/account' : '/app/register')}
+                    onPress={() => router.replace(isRegister ? '/login' : '/register')}
                     style={({ pressed }) => [styles.routeSwitch, pressed && styles.pressed]}>
                     <Text style={styles.routeSwitchText}>
                       {isRegister ? 'Masz już konto?' : 'Nie masz jeszcze konta?'}{' '}
@@ -404,25 +389,29 @@ function AuthHeader({
 
       <View style={styles.headerRow}>
         <Link asChild href="/">
-          <Pressable accessibilityLabel="ogarnijmy.to, strona główna">
+          <Pressable accessibilityLabel="ogarnijmy.to w Twoim biznesie, strona główna">
             <AuthLogo width={isDesktop ? 216 : 277} height={isDesktop ? 38 : 48} />
+            {/* Desktop only; hangs below the logo without making the header taller. */}
+            {isDesktop && (
+              <Image accessibilityLabel="" source={businessWordmark} style={styles.wordmark} />
+            )}
           </Pressable>
         </Link>
 
         {isDesktop && (
           <View style={styles.desktopNavigation}>
+            <Text style={styles.audienceInactiveText}>Dla Ciebie</Text>
             <View style={styles.audienceActive}>
               <View style={styles.activeDot} />
-              <Text style={styles.audienceActiveText}>Dla Ciebie</Text>
+              <Text style={styles.audienceActiveText}>Dla biznesu</Text>
             </View>
-            <Text style={styles.audienceInactiveText}>Dla biznesu</Text>
             <Pressable
               accessibilityLabel="Zaloguj się"
               accessibilityRole="link"
               disabled={!onProfilePress}
               onPress={onProfilePress}
-              style={({ pressed }) => [styles.profileCircle, pressed && styles.pressed]}>
-              <PersonIcon width={24} height={24} />
+              style={({ pressed }) => pressed && styles.pressed}>
+              <Image accessibilityLabel="" source={shopIcon} style={styles.profileIcon} />
             </Pressable>
           </View>
         )}
@@ -526,8 +515,8 @@ function SocialButton({
 
 function getAuthCallbackUrl(): string {
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
-    return `${window.location.origin}/app`;
+    return `${window.location.origin}/`;
   }
 
-  return Linking.createURL('/app/search');
+  return Linking.createURL('/');
 }

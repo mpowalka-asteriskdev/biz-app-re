@@ -27,14 +27,14 @@ export default function RootLayout() {
       ) : (
         // iOS: the home indicator fades out after a few seconds without touches.
         <Stack screenOptions={{ headerShown: false, autoHideHomeIndicator: true }}>
-          {/* Signed-out users land on the first available screen, which is login. */}
-          <Stack.Protected guard={!!session}>
-            <Stack.Screen name="index" />
-          </Stack.Protected>
+          {/* Web: landing page. Native: redirects straight into the app. */}
+          <Stack.Screen name="index" />
+
+          {/* The app itself lives under /app so web can keep / for the landing page. */}
+          <Stack.Screen name="app/(tabs)" />
 
           <Stack.Protected guard={!session}>
-            <Stack.Screen name="login" />
-            <Stack.Screen name="register" />
+            <Stack.Screen name="app/register" />
           </Stack.Protected>
         </Stack>
       )}

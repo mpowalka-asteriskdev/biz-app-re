@@ -42,6 +42,8 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+The app has three routes: `/login` and `/register` for signed-out users, and `/` once signed in. The **other-app** directory holds views copied from another app for reference only; it is not part of the build.
+
 Validate the project with `npm run lint`, `npx tsc --noEmit`, and `npx expo-doctor`.
 
 ## Platform-specific styling

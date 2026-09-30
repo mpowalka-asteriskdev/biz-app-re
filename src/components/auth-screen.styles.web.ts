@@ -16,9 +16,6 @@ const webOverrides = StyleSheet.create({
 
 /** Desktop web design ("Login screen desktop" / "Register screen" in Figma). */
 const webDesktopOverrides = StyleSheet.create({
-  backdrop: {
-    backgroundColor: 'rgba(5, 7, 8, 0.74)',
-  },
   hero: {
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -50,9 +47,13 @@ const webDesktopOverrides = StyleSheet.create({
   title: {
     textAlign: 'center',
   },
+  // Narrower than the form, so the login text breaks into two lines as in Figma.
   description: {
+    alignSelf: 'center',
+    maxWidth: 502,
     textAlign: 'center',
     fontSize: 14,
+    lineHeight: 18,
     fontWeight: '400',
   },
   fields: {

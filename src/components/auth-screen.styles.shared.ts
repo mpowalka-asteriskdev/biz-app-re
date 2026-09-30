@@ -12,13 +12,14 @@ export const sharedAuthScreenStyles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  // The photo itself is not darkened; the Figma frames lay 70% black over it.
   backdrop: {
     position: 'absolute',
     top: 0,
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: 'rgba(5, 7, 8, 0.12)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   safeArea: {
     flex: 1,
@@ -45,24 +46,32 @@ export const sharedAuthScreenStyles = StyleSheet.create({
     marginTop: 32,
   },
   headerRow: {},
+  // "w Twoim biznesie" under the logo, desktop only; offsets from the Figma frame.
+  wordmark: {
+    position: 'absolute',
+    top: 40.55,
+    left: 74.07,
+    width: 162.93,
+    height: 24.64,
+  },
   backButton: {
     alignSelf: 'flex-start',
   },
   desktopNavigation: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 18,
+    gap: 28,
   },
   audienceActive: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7,
+    gap: 4,
   },
   activeDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 99,
-    backgroundColor: '#E85012',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#E64F21',
   },
   audienceActiveText: {
     color: '#FFFFFF',
@@ -74,14 +83,9 @@ export const sharedAuthScreenStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
   },
-  profileCircle: {
+  profileIcon: {
     width: 48,
     height: 48,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.72)',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   formWrap: {
     alignSelf: 'center',
@@ -104,9 +108,9 @@ export const sharedAuthScreenStyles = StyleSheet.create({
   },
   description: {
     color: '#F9F6F2',
-    fontSize: 13,
-    lineHeight: 18,
-    fontWeight: '300',
+    fontSize: 12,
+    lineHeight: 15,
+    fontWeight: '200',
   },
   fields: {
     gap: 12,
