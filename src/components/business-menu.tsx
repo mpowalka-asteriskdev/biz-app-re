@@ -13,13 +13,13 @@ import Svg, { Path } from 'react-native-svg';
 import { useBusinessMenuStyles } from '@/components/business-menu.styles';
 import { MENU_COLORS } from '@/components/business-menu.styles.shared';
 
-// Tab routes with a menu button, in menu order.
-const MENU_ROUTES = ['calendar', 'clients', 'employees', 'sales', 'profile'] as const;
+// Tab routes with a menu button, in menu order; `index` is Kalendarz, at `/`.
+const MENU_ROUTES = ['index', 'clients', 'employees', 'sales', 'profile'] as const;
 
 type BusinessMenuRoute = (typeof MENU_ROUTES)[number];
 
 const TAB_LABELS: Record<BusinessMenuRoute, string> = {
-  calendar: 'Kalendarz',
+  index: 'Kalendarz',
   clients: 'Klienci',
   employees: 'Pracownicy',
   sales: 'Sprzedaż',
@@ -28,7 +28,7 @@ const TAB_LABELS: Record<BusinessMenuRoute, string> = {
 
 // Pracownicy is not in the Figma menu; its icons are the icon set's "people" in the menu colours.
 const TAB_ICON_ACTIVE: Record<BusinessMenuRoute, number> = {
-  calendar: require('@/assets/menu/calendar-active.svg'),
+  index: require('@/assets/menu/calendar-active.svg'),
   clients: require('@/assets/menu/clients-active.svg'),
   employees: require('@/assets/menu/employees-active.svg'),
   sales: require('@/assets/menu/sales-active.svg'),
@@ -36,7 +36,7 @@ const TAB_ICON_ACTIVE: Record<BusinessMenuRoute, number> = {
 };
 
 const TAB_ICON_INACTIVE: Record<BusinessMenuRoute, number> = {
-  calendar: require('@/assets/menu/calendar.svg'),
+  index: require('@/assets/menu/calendar.svg'),
   clients: require('@/assets/menu/clients.svg'),
   employees: require('@/assets/menu/employees.svg'),
   sales: require('@/assets/menu/sales.svg'),
@@ -44,7 +44,7 @@ const TAB_ICON_INACTIVE: Record<BusinessMenuRoute, number> = {
 };
 
 const TAB_ICON_ACTIVE_SIZE: Record<BusinessMenuRoute, number> = {
-  calendar: 28,
+  index: 28,
   clients: 30,
   employees: 30,
   sales: 30,

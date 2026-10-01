@@ -128,7 +128,10 @@ export function AuthScreen({ mode }: AuthScreenProps) {
     clearMessage();
 
     const callbackURL = getAuthCallbackUrl();
+    // additionalData rides the OAuth state; the backend creates new Google users as business
+    // accounts from it. Existing accounts keep their type.
     const result = await authClient.signIn.social({
+      additionalData: { accountType: 'business' },
       callbackURL,
       errorCallbackURL: callbackURL,
       provider: 'google',

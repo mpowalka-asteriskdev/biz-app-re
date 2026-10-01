@@ -86,7 +86,7 @@ The browser uses credentialed requests and the HTTP-only Better Auth session coo
 
 Registration requires a name, email, and password of at least eight characters, and creates a `business` account (the backend's `accountType` field). The backend signs the user in straight away, without email verification.
 
-An account that isn't `business` (e.g. a `client` account from the client app, or a Google sign-in) can open only the registration steps under `/onboarding`. Business accounts land on `/`, which looks up their place in `GET /places` and sends them to the steps while they have none.
+An account that isn't `business` (e.g. a `client` account from the client app, including a Google account first used there) can open only the registration steps under `/onboarding`. Business accounts land on `/`, the calendar; its tabs look up the account's place in `GET /places` first and send the account to the steps while it has none.
 
 The categories in the steps come from `GET /categories`. The company step creates the place (`POST /places`, together with the chosen category) and switches a `client` account to `business` through Better Auth's update-user endpoint, which opens the rest of the app. The later steps update the place (`PATCH /places/:id`, and `PATCH /places/:id/opening-hours` for the hours). A `client` account that already owns a place is switched to `business` when it opens the steps, and sent home.
 
@@ -97,6 +97,8 @@ The client calls `authClient.signIn.social()` for both native and web:
 - Web follows the Google redirect in the current browser and returns to the web app.
 - Native opens a secure browser session and returns through the Expo/`bizapp` deep link.
 - Better Auth creates and persists the application session after Google succeeds.
+
+The call passes `additionalData: { accountType: 'business' }`, which Better Auth carries through the OAuth state. The backend reads it on the callback and creates a new user as a `business` account, the same as email registration. An existing account keeps its type, so a `client` account that signs in with Google still goes through the steps, which switch it to `business`.
 
 ## Protected API calls
 
