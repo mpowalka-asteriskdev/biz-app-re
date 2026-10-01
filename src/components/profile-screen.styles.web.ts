@@ -1,6 +1,6 @@
 import { sharedProfileScreenStyles } from '@/components/profile-screen.styles.shared';
 
-/** Not used on web: desktop shows CompanyProfileScreen and mobile web the placeholder. */
+/** Mobile web uses the Android design ("User profile" in Figma); desktop web shows CompanyProfileScreen. */
 export function useProfileScreenStyles() {
   return sharedProfileScreenStyles;
 }

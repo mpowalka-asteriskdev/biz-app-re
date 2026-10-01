@@ -3,7 +3,10 @@ import { StyleSheet } from 'react-native';
 const TEXT = '#201F1E';
 const MUTED = '#AAA5A2';
 
-/** Klienci screen ("Clients list" in Figma); the Android design, also used on mobile web. */
+/**
+ * Klienci screens ("Clients list" and "Client profile page" in Figma): the Android design, also
+ * used on mobile web. The mobile web Pracownicy screens are built the same way and share it.
+ */
 export const sharedClientsScreenStyles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -230,5 +233,32 @@ export const sharedClientsScreenStyles = StyleSheet.create({
     color: MUTED,
     fontSize: 15,
     fontWeight: '400',
+  },
+
+  // Pracownicy on mobile web: "Staff desktop" laid out like the Klienci screens.
+  // The "Włączenie filtra" row takes the place of the Lista / Grupy klientów switch.
+  filterRow: {
+    marginTop: 19,
+  },
+  employeeRole: {
+    marginTop: 5,
+    color: TEXT,
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  // The value and its edit icon, at the end of the row.
+  employeeField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  employeeValue: {
+    color: MUTED,
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  editIcon: {
+    width: 24,
+    height: 24,
   },
 });

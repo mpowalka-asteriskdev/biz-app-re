@@ -8,10 +8,10 @@ import { usePlatformLayout } from '@/hooks/use-platform-layout';
 import { authClient } from '@/lib/auth-client';
 
 export default function ProfileRoute() {
-  const { isAndroid, isWebDesktop } = usePlatformLayout();
+  const { isAndroid, isWebDesktop, isWebMobile } = usePlatformLayout();
 
-  // Only the Android and desktop web layouts are designed so far.
-  if (isAndroid) return <ProfileScreen />;
+  // Only the Android and desktop web layouts are designed so far; mobile web uses Android's.
+  if (isAndroid || isWebMobile) return <ProfileScreen />;
   if (isWebDesktop) return <CompanyProfileScreen />;
 
   return <ProfilePlaceholder />;
@@ -22,7 +22,7 @@ function ProfilePlaceholder() {
 
   return (
     <PlaceholderScreen title="Profil">
-      {/* Web phones have no other way to sign out until their profile screen is designed. */}
+      {/* iOS has no other way to sign out until its profile screen is designed. */}
       <Pressable
         accessibilityRole="button"
         onPress={() => authClient.signOut()}

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const MUTED = '#AAA5A2';
 const FAINT = '#D6D5D4';
 
-/** Profil tab ("User profile" in Figma); only the Android design exists so far. */
+/** Profil tab ("User profile" in Figma); the Android design, also used on mobile web. */
 export const sharedProfileScreenStyles = StyleSheet.create({
   screen: {
     flex: 1,

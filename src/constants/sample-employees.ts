@@ -22,6 +22,12 @@ export const SAMPLE_EMPLOYEE_DIRECTORY: DirectoryGroup[] = [
   { letter: 'C', people: [{ firstName: 'Marek', lastName: 'Cejrowski' }] },
 ];
 
+/**
+ * The same employees as one list, for the mobile web Pracownicy screen, which has no letter
+ * headings. An employee's position is the id in their profile route.
+ */
+export const SAMPLE_EMPLOYEES = SAMPLE_EMPLOYEE_DIRECTORY.flatMap((group) => group.people);
+
 /** Details shown for every employee; only the name comes from the list. */
 export const SAMPLE_EMPLOYEE_PROFILE = {
   role: 'Barber przy Głównej',
