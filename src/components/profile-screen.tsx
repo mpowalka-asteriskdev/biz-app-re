@@ -8,6 +8,7 @@ import { getBusinessMenuHeight } from '@/components/business-menu';
 import { useProfileScreenStyles } from '@/components/profile-screen.styles';
 import { SignOutMenuButton } from '@/components/sign-out-menu';
 import { Toggle } from '@/components/toggle';
+import { PROFILE_SECTIONS } from '@/constants/profile-sections';
 import { SAMPLE_PROFILE } from '@/constants/sample-profile';
 import { authClient } from '@/lib/auth-client';
 
@@ -20,12 +21,11 @@ const visitIcon = require('@/assets/profile/visit.svg');
 const locationIcon = require('@/assets/profile/location.svg');
 const chevronIcon = require('@/assets/onboarding/chevron-right.svg');
 
-const LINKS = ['Twoje dane', 'Wystawione opinie', 'Karty podarunkowe', 'Program lojalnościowy'];
-
 /**
- * Profil tab ("User profile" in Figma, Android design). The name is the signed-in user's; the
- * rest is sample data. The design has no sign-out, so the settings icon opens it. The links and
- * the photo's "+" have no designs for what they open.
+ * Profil tab ("User profile" in Figma, Android design, also used on mobile web). The name is the
+ * signed-in user's; the rest is sample data. The design has no sign-out, so the settings icon
+ * opens it. The rows with a chevron open sub menus (ProfileSectionScreen); the photo's "+" has no
+ * design for what it opens.
  */
 export function ProfileScreen() {
   const router = useRouter();
@@ -110,11 +110,17 @@ export function ProfileScreen() {
               <Text style={styles.rowLabel}>Przypomnienie o wizycie</Text>
               <Toggle label="Przypomnienie o wizycie" value={reminder} onChange={setReminder} />
             </View>
-            {LINKS.map((label) => (
-              <View key={label} style={styles.row}>
-                <Text style={styles.rowLabel}>{label}</Text>
+            {PROFILE_SECTIONS.map(({ slug, title }) => (
+              <Pressable
+                key={slug}
+                accessibilityRole="button"
+                onPress={() =>
+                  router.push({ pathname: '/profile/[section]', params: { section: slug } })
+                }
+                style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+                <Text style={styles.rowLabel}>{title}</Text>
                 <Image accessibilityLabel="" source={chevronIcon} style={styles.chevron} />
-              </View>
+              </Pressable>
             ))}
           </View>
         </View>

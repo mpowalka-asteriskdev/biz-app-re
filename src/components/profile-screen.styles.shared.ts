@@ -167,4 +167,24 @@ export const sharedProfileScreenStyles = StyleSheet.create({
   pressed: {
     opacity: 0.72,
   },
+
+  // Sub menus opened from the rows; no designs, so they follow this screen.
+  sectionTitle: {
+    marginTop: 21,
+    color: '#000000',
+    fontSize: 20,
+    lineHeight: 25,
+    fontWeight: '700',
+  },
+  sectionRows: {
+    marginTop: 12,
+  },
+  rowValue: {
+    flexShrink: 1,
+    marginLeft: 16,
+    color: '#000000',
+    fontSize: 15,
+    fontWeight: '700',
+    textAlign: 'right',
+  },
 });
