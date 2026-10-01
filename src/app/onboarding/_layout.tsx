@@ -5,18 +5,12 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { OnboardingProvider } from '@/components/onboarding-context';
 import { OnboardingButton } from '@/components/onboarding-screen';
 import { authClient } from '@/lib/auth-client';
-import { findOwnPlace, switchToBusinessAccount } from '@/lib/onboarding';
+import { findOwnPlace } from '@/lib/onboarding';
 
-/**
- * Registration steps that create the user's place; they share their answers. It's the only
- * screen a client account gets in this app: creating the place makes it a business account.
- */
+/** Registration steps that create the user's place; they share their answers. */
 export default function OnboardingLayout() {
   const { data: session } = authClient.useSession();
   const userId = session?.user.id;
-  const isBusiness = session?.user.accountType === 'business';
-  // The company step switches the account mid-flow; that must not re-run the check below.
-  const [wasBusiness] = useState(isBusiness);
   const [hasPlace, setHasPlace] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -29,13 +23,7 @@ export default function OnboardingLayout() {
     let active = true;
 
     findOwnPlace(userId)
-      .then(async (place) => {
-        // A client account that already owns a place (e.g. switching it failed after the
-        // company step) only needs the switch; home stays closed to it until then.
-        if (place && !wasBusiness) {
-          await switchToBusinessAccount();
-        }
-
+      .then((place) => {
         if (active) setHasPlace(place !== null);
       })
       .catch((checkError: unknown) => {
@@ -49,7 +37,7 @@ export default function OnboardingLayout() {
     return () => {
       active = false;
     };
-  }, [userId, wasBusiness, attempt]);
+  }, [userId, attempt]);
 
   if (error) {
     return (
@@ -67,8 +55,7 @@ export default function OnboardingLayout() {
     );
   }
 
-  // After a switch, home opens only once the session shows the business account.
-  if (hasPlace === null || (hasPlace && !isBusiness)) {
+  if (hasPlace === null) {
     return (
       <View style={styles.screen}>
         <ActivityIndicator color="#AAA5A2" size="large" />

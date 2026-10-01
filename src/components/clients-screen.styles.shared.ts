@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const TEXT = '#201F1E';
 const MUTED = '#AAA5A2';
 
-/** Klienci screen ("Clients list" in Figma); only the Android design exists so far. */
+/** Klienci screen ("Clients list" in Figma); the Android design, also used on mobile web. */
 export const sharedClientsScreenStyles = StyleSheet.create({
   screen: {
     flex: 1,

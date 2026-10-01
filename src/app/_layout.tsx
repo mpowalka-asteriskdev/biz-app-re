@@ -13,6 +13,9 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme === 'dark' ? 'dark' : 'light'];
   const { data: session, isPending } = authClient.useSession();
+  // Only business accounts get in. Any other session (e.g. a client account from the client app)
+  // stays on login, which signs it out.
+  const isSignedIn = session?.user.accountType === 'business';
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -28,20 +31,16 @@ export default function RootLayout() {
         // iOS: the home indicator fades out after a few seconds without touches.
         <Stack screenOptions={{ headerShown: false, autoHideHomeIndicator: true }}>
           {/* Signed-out users land on the first available screen, which is login. */}
-          <Stack.Protected guard={!!session}>
-            {/* Client accounts (e.g. from the client app) only get onboarding, which makes them
-                business accounts. The tabs (Kalendarz is `/`) also send businesses without a
-                place there. */}
-            <Stack.Protected guard={session?.user.accountType === 'business'}>
-              <Stack.Screen name="(tabs)" />
-              {/* Forms opened with "+"; they cover the tabs, without the bottom menu. */}
-              <Stack.Screen name="clients/new" />
-              <Stack.Screen name="visits/new" />
-            </Stack.Protected>
+          <Stack.Protected guard={isSignedIn}>
+            {/* The tabs (Kalendarz is `/`) send accounts without a place to onboarding. */}
+            <Stack.Screen name="(tabs)" />
+            {/* Forms opened with "+"; they cover the tabs, without the bottom menu. */}
+            <Stack.Screen name="clients/new" />
+            <Stack.Screen name="visits/new" />
             <Stack.Screen name="onboarding" />
           </Stack.Protected>
 
-          <Stack.Protected guard={!session}>
+          <Stack.Protected guard={!isSignedIn}>
             <Stack.Screen name="login" />
             <Stack.Screen name="register" />
           </Stack.Protected>

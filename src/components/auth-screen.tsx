@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import * as Linking from 'expo-linking';
 import { Link, useRouter } from 'expo-router';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   ImageBackground,
@@ -48,7 +48,7 @@ const shopIcon = require('@/assets/auth/shop.svg');
 
 export function AuthScreen({ mode }: AuthScreenProps) {
   const router = useRouter();
-  const { refetch } = authClient.useSession();
+  const { data: session, refetch } = authClient.useSession();
   const { isWebDesktop: isDesktop } = usePlatformLayout();
   const styles = useAuthScreenStyles();
   const isRegister = mode === 'register';
@@ -65,6 +65,23 @@ export function AuthScreen({ mode }: AuthScreenProps) {
   // Desktop fields show a tick once login input is valid, and clear buttons while registering.
   const isEmailValid = email.trim().includes('@');
   const isPasswordValid = password.length >= 8;
+
+  // The root layout keeps every account that isn't a business account on this screen. A client
+  // account (e.g. from the client app, or a Google account first used there) is signed straight
+  // out. A business account goes home, which sends it to onboarding while it has no place.
+  useEffect(() => {
+    if (!session) return;
+
+    if (session.user.accountType === 'business') {
+      router.replace('/');
+      return;
+    }
+
+    void authClient.signOut().then(() => {
+      setIsError(true);
+      setMessage('To konto jest kontem klienta i nie ma dostępu do aplikacji dla firm.');
+    });
+  }, [session, router]);
 
   function clearMessage() {
     setMessage(null);
@@ -117,10 +134,9 @@ export function AuthScreen({ mode }: AuthScreenProps) {
       return;
     }
 
-    // Sign-up signs the user in too. Home then sends accounts without a filled-in place to
-    // onboarding.
+    // Sign-up signs the user in too. The session effect above then lets the account in or signs
+    // it out.
     await refetch();
-    router.replace('/');
   }
 
   async function signInWithGoogle() {
@@ -146,7 +162,6 @@ export function AuthScreen({ mode }: AuthScreenProps) {
 
     if (Platform.OS !== 'web') {
       await refetch();
-      router.replace('/');
     }
   }
 

@@ -19,7 +19,6 @@ import { Toggle } from '@/components/toggle';
 import { WEEK_DAYS } from '@/constants/onboarding';
 import { usePlatformLayout } from '@/hooks/use-platform-layout';
 import { authClient } from '@/lib/auth-client';
-import { switchToBusinessAccount } from '@/lib/onboarding';
 import {
   type Category,
   createPlace,
@@ -190,13 +189,11 @@ export function CompanyStep() {
   const router = useRouter();
   const styles = useOnboardingStyles();
   const { data, update } = useOnboarding();
-  const { data: session } = authClient.useSession();
   const { isWebDesktop } = usePlatformLayout();
   const [mapVisible, setMapVisible] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const { company, consents, pinConfirmed } = data;
-  const isBusiness = session?.user.accountType === 'business';
 
   function setField(key: CompanyField, value: string) {
     const nextCompany = { ...company, [key]: value };
@@ -228,13 +225,6 @@ export function CompanyStep() {
         : await createPlace({ ...company, categoryId: data.categoryId });
 
       update({ placeId: place.id });
-
-      // Owning a place makes a client account a business account. Retried on the next press
-      // if it fails, since the place is kept.
-      if (!isBusiness) {
-        await switchToBusinessAccount();
-      }
-
       router.push('/onboarding/about');
     } catch (error) {
       setMessage(errorMessage(error));

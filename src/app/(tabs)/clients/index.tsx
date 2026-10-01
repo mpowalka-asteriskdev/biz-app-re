@@ -4,10 +4,10 @@ import { PlaceholderScreen } from '@/components/placeholder-screen';
 import { usePlatformLayout } from '@/hooks/use-platform-layout';
 
 export default function ClientsRoute() {
-  const { isAndroid, isWebDesktop } = usePlatformLayout();
+  const { isAndroid, isWebDesktop, isWebMobile } = usePlatformLayout();
 
-  // Only the Android and desktop web layouts are designed so far.
-  if (isAndroid) return <ClientsScreen />;
+  // Only the Android and desktop web layouts are designed so far; mobile web uses Android's.
+  if (isAndroid || isWebMobile) return <ClientsScreen />;
   if (isWebDesktop) return <ClientsDesktopScreen />;
 
   return <PlaceholderScreen title="Klienci" />;
